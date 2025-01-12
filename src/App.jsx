@@ -9,7 +9,7 @@ const App = () => {
 			<Editor />
 			<ToastContainer
 				position="bottom-right"
-				autoClose={3000}
+				autoClose={1500}
 				hideProgressBar={false}
 				theme="dark"
 			/>
