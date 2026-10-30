@@ -28,7 +28,7 @@ const Editor = () => {
 	const [iframeLoaded, setIframeLoaded] = useState(false);
 
 	// Set iframe source with dynamic parameters for dark mode, font size, and language
-	const iframeSrc = `https://onecompiler.com/embed/${language}?theme=${darkMode ? "dark" : "light"}&fontSize=${fontSize}&listenToEvents=true&hideNew=true&codeChangeEvent=true&hideRun=true&hideTitle=true`;
+	const iframeSrc = `https://onecompiler.com/embed/${language}?theme=${darkMode ? "dark" : "light"}&fontSize=${fontSize}&listenToEvents=true&hideNew=true&codeChangeEvent=true&hideRun=true&hideTitle=true&hideLanguageSelection=true`;
 
 	// Handle incoming messages from the iframe
 	const handleMessage = (e) => {
@@ -180,9 +180,9 @@ const Editor = () => {
 	// --------------------------------USE EFFECT--------------------------------------------
 	useEffect(() => {
 		window.addEventListener("message", handleMessage);
-		return () => {
-			window.removeEventListener("message", handleMessage);
-		};
+		// return () => {
+		// 	window.removeEventListener("message", handleMessage);
+		// };
 	}, []);
 
 	// Load saved code from localStorage on mount
@@ -193,6 +193,10 @@ const Editor = () => {
 		}
 	}, []);
 
+	// Store the code in localStorage whenever it changes
+	useEffect(() => {
+		localStorage.setItem("editorCode", code);
+	}, [code]);
 	// When iframe is loaded, immediately send the saved code to the iframe
 	useEffect(() => {
 		if (iframeLoaded) {
@@ -209,12 +213,6 @@ const Editor = () => {
 			}
 		}
 	}, [iframeLoaded, code, language]);
-
-	// Store the code in localStorage whenever it changes
-	useEffect(() => {
-		localStorage.setItem("editorCode", code);
-	}, [code]);
-
 	return (
 		<Box
 			sx={{
@@ -261,6 +259,7 @@ const Editor = () => {
 			</Box>
 
 			<iframe
+				onLoad={() => setIframeLoaded(true)}
 				id="oc-editor"
 				title="Code Editor"
 				style={{
@@ -270,7 +269,6 @@ const Editor = () => {
 					borderRadius: "8px",
 				}}
 				src={iframeSrc}
-				onLoad={() => setIframeLoaded(true)}
 			/>
 
 			<Box
